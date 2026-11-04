@@ -1,5 +1,5 @@
 namespace TodoCli;
-
+// Represents the priority level of a todo item.
 public enum Priority
 {
     Low,
@@ -7,6 +7,7 @@ public enum Priority
     High
 }
 
+// Represents a single todo item with properties for ID, title, priority, completion status, and creation timestamp.
 public class TodoItem
 {
     public int Id { get; set; }
