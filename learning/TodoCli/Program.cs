@@ -1,5 +1,8 @@
 ﻿using TodoCli;
 
-ITodoRepository repository = new LoggingTodoRepository(new InMemoryTodoRepository());
+var path = Environment.GetEnvironmentVariable("TODO_FILE") ?? "todos.json";
+
+ITodoRepository repository = new LoggingTodoRepository(new JsonTodoRepository(path));
 var app = new TodoApp(repository);
-app.Run();
+
+await app.RunAsync();

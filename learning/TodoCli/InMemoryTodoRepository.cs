@@ -5,25 +5,25 @@ public class InMemoryTodoRepository : ITodoRepository
     private readonly List<TodoItem> _items = new();
     private int _nextId = 1;
 
-    public IReadOnlyList<TodoItem> GetAll() => _items.ToList();
+    public Task<IReadOnlyList<TodoItem>> GetAllAsync() => Task.FromResult<IReadOnlyList<TodoItem>>(_items.ToList());
 
-    public TodoItem? GetById(int id) => _items.Find(i=> i.Id ==id);
+    public Task<TodoItem?> GetByIdAsync(int id) => Task.FromResult<TodoItem?>(_items.Find(i=> i.Id ==id));
 
-    public TodoItem Add(TodoItem item)
+    public Task<TodoItem> AddAsync(TodoItem item)
     {
         item.Id = _nextId++;
         _items.Add(item);
-        return item;
+        return Task.FromResult(item);
     }
 
-    public bool Update(TodoItem item)
+    public Task<bool> UpdateAsync(TodoItem item)
     {
         var index = _items.FindIndex(i => i.Id == item.Id);
-        if (index < 0) return false;
+        if (index < 0) return Task.FromResult(false);
 
         _items[index] = item;
-        return true;
+        return Task.FromResult(true);
     }
 
-    public bool Delete(int id) => _items.RemoveAll(i => i.Id == id) > 0;
+    public Task<bool> DeleteAsync(int id) => Task.FromResult(_items.RemoveAll(i => i.Id == id) > 0);
 }
