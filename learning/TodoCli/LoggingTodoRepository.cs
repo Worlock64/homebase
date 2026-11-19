@@ -9,33 +9,33 @@ public class LoggingTodoRepository : ITodoRepository
         _innerRepository = innerRepository;
     }
 
-    public IReadOnlyList<TodoItem> GetAll()
+    public Task<IReadOnlyList<TodoItem>> GetAllAsync()
     {
-        Console.WriteLine("[repo] GetAll called");
-        return _innerRepository.GetAll();
+        Console.WriteLine("[repo] GetAllAsync called");
+        return _innerRepository.GetAllAsync();
     }
 
-    public TodoItem? GetById(int id)
+    public Task<TodoItem?> GetByIdAsync(int id)
     {
-        Console.WriteLine($"[repo] GetById called with id: {id}");
-        return _innerRepository.GetById(id);
+        Console.WriteLine($"[repo] GetByIdAsync called with id: {id}");
+        return _innerRepository.GetByIdAsync(id);
     }
 
-    public TodoItem Add(TodoItem item)
+    public Task<TodoItem> AddAsync(TodoItem item)
     {
-        Console.WriteLine($"[repo] Add called with item: {item.Title}");
-        return _innerRepository.Add(item);
+        Console.WriteLine($"[repo] AddAsync called with item: {item.Title}");
+        return _innerRepository.AddAsync(item);
     }
 
-    public bool Update(TodoItem item)
+    public Task<bool> UpdateAsync(TodoItem item)
     {
-        Console.WriteLine($"[repo] Update called with item: {item.Title}");
-        return _innerRepository.Update(item);
+        Console.WriteLine($"[repo] UpdateAsync called with item: {item.Title}");
+        return _innerRepository.UpdateAsync(item);
     }
 
-    public bool Delete(int id)
+    public Task<bool> DeleteAsync(int id)
     {
-        Console.WriteLine($"[repo] Delete called with id: {id}");
-        return _innerRepository.Delete(id);
+        Console.WriteLine($"[repo] DeleteAsync called with id: {id}");
+        return _innerRepository.DeleteAsync(id);
     }
 }

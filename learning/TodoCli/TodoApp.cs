@@ -9,7 +9,7 @@ public class TodoApp
         _repository = repository;
     }
 
-    public void Run()
+    public async Task RunAsync()
     {
         var isRunning = true;
 
@@ -24,25 +24,25 @@ public class TodoApp
             switch (input)
             {
                 case "1":
-                    ListItems();
+                    await ListItemsAsync();
                     break;
                 case "2":
-                    AddItem();
+                    await AddItemAsync();
                     break;
                 case "3":
-                    CompleteItem();
+                    await CompleteItemAsync();
                     break;
                 case "4":
-                    DeleteItem();
+                    await DeleteItemAsync();
                     break;
                 case "5":
-                    UpdateItem();
+                    await UpdateItemAsync();
                     break;
                 case "s":
-                    SearchItems();
+                    await SearchItemsAsync();
                     break;
                 case "r":
-                    ShowReport();
+                    await ShowReportAsync();
                     break;
                 case "6":
                     isRunning = false;
@@ -54,12 +54,12 @@ public class TodoApp
         }
     }
 
-    private void ListItems()
+    private async Task ListItemsAsync()
     {
-        PrintItems(_repository.GetAll());
+        PrintItems(await _repository.GetAllAsync());
     }
 
-    private void SearchItems()
+    private async Task SearchItemsAsync()
     {
         Console.Write("Search text (blank for any): ");
         var text = Console.ReadLine()?.Trim() ?? string.Empty;
@@ -73,7 +73,7 @@ public class TodoApp
         Console.Write("Any high priority items? (y/n): ");
         var anyHighPriority = Console.ReadLine()?.Trim().ToLowerInvariant();
 
-        var query = _repository.GetAll().AsEnumerable();
+        var query = (await _repository.GetAllAsync()).AsEnumerable();
 
         if (text.Length > 0)
         {
@@ -128,7 +128,7 @@ public class TodoApp
         PrintItems(results);
     }
 
-    private void AddItem()
+    private async Task AddItemAsync()
     {
         Console.Write("Title: ");
         var title = Console.ReadLine()?.Trim();
@@ -144,15 +144,15 @@ public class TodoApp
             ? parsedPriority
             : Priority.Medium;
 
-        _repository.Add(new TodoItem { Title = title, Priority = priority });
+        await _repository.AddAsync(new TodoItem { Title = title, Priority = priority });
         Console.WriteLine("Added: " + title);
     }
 
-    private void CompleteItem()
+    private async Task CompleteItemAsync()
     {
         if(!TryReadId(out var id)) return;
 
-        var item = _repository.GetById(id);
+        var item = await _repository.GetByIdAsync(id);
         if (item is null)
         {
             Console.WriteLine($"No item found with ID {id}.");
@@ -160,15 +160,15 @@ public class TodoApp
         }
 
         item.IsDone = true;
-        _repository.Update(item);
+        await _repository.UpdateAsync(item);
         Console.WriteLine($"Marked item {id} as complete.");
     }
 
-    private void UpdateItem()
+    private async Task UpdateItemAsync()
     {
         if(!TryReadId(out int id)) return;
 
-        var item = _repository.GetById(id);
+        var item = await _repository.GetByIdAsync(id);
         if (item is null)
         {
             Console.WriteLine($"No item found with ID {id}.");
@@ -192,20 +192,20 @@ public class TodoApp
             item.Priority = newPriority;
         }
 
-        _repository.Update(item);
+        await _repository.UpdateAsync(item);
         Console.WriteLine($"Updated item {id}.");
     }
 
-    private void DeleteItem()
+    private async Task DeleteItemAsync()
     {
-        Console.WriteLine(TryReadId(out int id) && _repository.Delete(id)
+        Console.WriteLine(TryReadId(out int id) && await _repository.DeleteAsync(id)
             ? $"Deleted item {id}."
             : $"No item found with ID {id}.");
     }
 
-    private void ShowReport()
+    private async Task ShowReportAsync()
     {
-        var items = _repository.GetAll();
+        var items = await _repository.GetAllAsync();
         
         if(items.Count == 0)
         {

@@ -2,9 +2,9 @@ namespace TodoCli;
 
 public interface ITodoRepository
 {
-    IReadOnlyList<TodoItem> GetAll();
-    TodoItem? GetById (int id);
-    TodoItem Add(TodoItem item);
-    bool Update(TodoItem item);
-    bool Delete(int id);
+    Task<IReadOnlyList<TodoItem>> GetAllAsync();
+    Task<TodoItem?> GetByIdAsync(int id);
+    Task<TodoItem> AddAsync(TodoItem item);
+    Task<bool> UpdateAsync(TodoItem item);
+    Task<bool> DeleteAsync(int id);
 }
