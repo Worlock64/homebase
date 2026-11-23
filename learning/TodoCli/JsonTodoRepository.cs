@@ -107,9 +107,19 @@ public class JsonTodoRepository : ITodoRepository
 
         if (File.Exists(_path))
         {
-            await using var stream = File.OpenRead(_path);
-            _items = await JsonSerializer.DeserializeAsync<List<TodoItem>>(stream, Options)
-                ?? new List<TodoItem>();
+            try
+            {
+                await using var stream = File.OpenRead(_path);
+                _items = await JsonSerializer.DeserializeAsync<List<TodoItem>>(stream, Options)
+                    ?? new List<TodoItem>();
+            }
+            catch (JsonException)
+            {
+                Console.WriteLine($"Warning: Could not parse JSON file at {_path}. Backing up file and starting with an empty list.");
+                var backupPath = $"{_path}.{DateTime.UtcNow:yyyMMdd-HHmmss}.bak";
+                File.Copy(_path, backupPath, overwrite: true);
+                _items = new List<TodoItem>();
+            }
         }
         else
         {
